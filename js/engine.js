@@ -149,8 +149,6 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
-
         renderEntities();
     }
 
@@ -175,16 +173,12 @@ var Engine = (function(global) {
         // gameText.render();
 
     }
-    // x: >= x && < x + width
-    // y: >= y && < y + height
+    //  Check if player has came across any items.
     function checkForItems() {
         var itemX,
             itemY;
         allItems.forEach(function(item){
-            console.log('item x: '+item.x+' player x:'+player.x);
-            console.log('item y: '+item.y+' player y:'+player.y);
-            console.log('----------------------------------------------------');
-            // Check column if player is in same column
+            // Check column if player is in same column and row
             if(!item.collected){
 
                 if(item.x >= player.x && (item.x < player.x + 90)){
@@ -193,8 +187,6 @@ var Engine = (function(global) {
                         item.collected = true;
                         player.points += item.worth;
                     }
-
-
                 }
             }
         });
