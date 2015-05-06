@@ -1,6 +1,20 @@
 frontend-nanodegree-arcade-game
 ===============================
 
-Students should use this rubric: https://www.udacity.com/course/viewer#!/c-ud015/l-3072058665/m-3072588797
+Authored by: Kristian Brito
+Inspired by: Udacity
 
-for self-checking their submission.
+How to play:
+You may begin playing on page load. Use the arrow keys to move your
+player per cell block across the canvas to collect special items without
+getting caught by the Enemy. You have 3 lives. Enjoy!
+
+References
+==========
+
+getRandomInt(): Returns a random integer between min (included) and max (excluded).
+Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+
+Rendering Canvas Canvas Text
+Source: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle
+

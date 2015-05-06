@@ -25,6 +25,7 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
+    ctx.textBaseline = 'top';
     canvas.width = 505;
     canvas.height = 606;
     doc.body.appendChild(canvas);
@@ -80,10 +81,11 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
+        checkForItems();
     }
 
-    /* This is called by the update function  and loops through all of the
+    /* This is called by the update function and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
      * their update() methods. It will then call the update function for your
      * player object. These update methods should focus purely on updating
@@ -95,6 +97,18 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+    }
+
+    function checkCollisions() {
+        for (var i = allEnemies.length - 1; i >= 0; i--) {
+
+            if ((allEnemies[i].x + 65 > player.x && allEnemies[i].x < player.x) && (allEnemies[i].y + 65 > player.y && allEnemies[i].y < player.y + 40)) {
+                player.alive = false;
+                reset();
+                break;
+            };
+        };
+
     }
 
     /* This function initially draws the "game level", it will then call
@@ -152,7 +166,38 @@ var Engine = (function(global) {
             enemy.render();
         });
 
+        allItems.forEach(function(item) {
+            item.render();
+        });
+
         player.render();
+
+        // gameText.render();
+
+    }
+    // x: >= x && < x + width
+    // y: >= y && < y + height
+    function checkForItems() {
+        var itemX,
+            itemY;
+        allItems.forEach(function(item){
+            console.log('item x: '+item.x+' player x:'+player.x);
+            console.log('item y: '+item.y+' player y:'+player.y);
+            console.log('----------------------------------------------------');
+            // Check column if player is in same column
+            if(!item.collected){
+
+                if(item.x >= player.x && (item.x < player.x + 90)){
+                    // Check if player is in same row
+                   if(item.y <= player.y && !(player.y > item.y + 40)){
+                        item.collected = true;
+                        player.points += item.worth;
+                    }
+
+
+                }
+            }
+        });
     }
 
     /* This function does nothing but it could have been a good place to
@@ -160,7 +205,8 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        player.reset();
+
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -172,7 +218,13 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/Key.png',
+        'images/star.png',
+        'images/Gem Green.png',
+        'images/Gem Blue.png',
+        'images/Gem Orange.png',
+        'images/Heart.png',
     ]);
     Resources.onReady(init);
 
