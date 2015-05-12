@@ -58,7 +58,7 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
-    };
+    }
 
     /* This function does some initial setup that should only occur once,
      * particularly setting the lastTime variable that is required for the
@@ -82,7 +82,6 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         checkCollisions();
-        checkForItems();
     }
 
     /* This is called by the update function and loops through all of the
@@ -98,7 +97,10 @@ var Engine = (function(global) {
         });
         player.update();
     }
-
+    /* This function checks whether or not the player has crossed paths with an
+     * enemy, resulting in a collision and the player losing a life and getting
+     * resetted.
+     */
     function checkCollisions() {
         for (var i = allEnemies.length - 1; i >= 0; i--) {
 
@@ -169,28 +171,8 @@ var Engine = (function(global) {
         });
 
         player.render();
-
-        // gameText.render();
-
     }
-    //  Check if player has came across any items.
-    function checkForItems() {
-        var itemX,
-            itemY;
-        allItems.forEach(function(item){
-            // Check column if player is in same column and row
-            if(!item.collected){
 
-                if(item.x >= player.x && (item.x < player.x + 90)){
-                    // Check if player is in same row
-                   if(item.y <= player.y && !(player.y > item.y + 40)){
-                        item.collected = true;
-                        player.points += item.worth;
-                    }
-                }
-            }
-        });
-    }
 
     /* This function does nothing but it could have been a good place to
      * handle game reset states - maybe a new game menu or a game over screen

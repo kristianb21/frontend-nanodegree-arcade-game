@@ -29,7 +29,6 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    // console.log(this.x);
 
     // reset enemy's position after is crosses the board
     if (this.x > ctx.canvas.width) {
@@ -38,9 +37,9 @@ Enemy.prototype.update = function(dt) {
         track = getRandomInt(0,3);
         this.y = this.tracks[track];
     }
-    // Enemy keeps moving if player is still living
-    if (player.alive) {
-        this.x = this.x + this.speed;
+    // Enemy keeps moving if player is still living or player has not won yet.
+    if (player.alive && !player.win) {
+        this.x = this.x + this.speed+ 100 * dt;
     }
 
 }
@@ -48,12 +47,10 @@ Enemy.prototype.update = function(dt) {
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-
-    // this.update(10);
-    //console.log(this.x);
-
 }
-
+/* Create enemy object
+ * params: x,y,speed
+ */
 var enemy01 = Enemy(0,60, 6);
 var enemy02 = Enemy(0,150, 6);
 var enemy03 = Enemy(0,230,1);
@@ -61,6 +58,8 @@ var enemy04 = Enemy(0,60, 6);
 var enemy05 = Enemy(0,150, 6);
 var enemy06 = Enemy(0,230,1);
 var enemy07 = Enemy(0,230,1);
+var enemy08 = Enemy(0,230,1);
+var enemy09 = Enemy(0,230,1);
 allEnemies = [
     enemy01,
     enemy02,
@@ -69,6 +68,8 @@ allEnemies = [
     enemy05,
     enemy06,
     enemy07,
+    enemy08,
+    enemy09,
 ]
 // The Player
 var Player = function(x,y) {
@@ -88,7 +89,8 @@ var Player = function(x,y) {
     obj.alive = true;
     obj.lives = 4;
     obj.points = 0;
-    obj.gameover = false;
+    obj.gameovesr = false;
+    obj.win = false;
 
     return obj;
 }
@@ -96,8 +98,8 @@ var Player = function(x,y) {
 // Reset the player's position
 Player.prototype.reset = function() {
     this.x = 200;
-    this.y = 380;
-    if (this.lives > 1) {
+    this.y = 390;
+    if (this.lives > 1 && !this.win) {
         this.alive = true;
         this.lives--;
     } else {
@@ -105,19 +107,55 @@ Player.prototype.reset = function() {
         this.lives--;
         this.gameover = true;
     }
-
 }
 
-// Update the player's position, required method for game
-// Parameter: dt, a time delta between ticks
-Player.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
-
+// This function gets called after the player reaches the water.
+Player.prototype.hitWater = function() {
+    // Reset player to starting position
+    this.x = 200;
+    this.y = 390;
+    // Water == GOOD so player gets 1 tiny point.
+    this.points++;
 }
 
-// Draw the enemy on the screen, required method for game
+
+// Check if player has came across any items.
+Player.prototype.checkForItems = function() {
+    var itemX,
+        itemY;
+    allItems.forEach(function(item){
+        // Check column if player is in same column and row
+        if(!item.collected){
+
+            if(item.x >= player.x && (item.x < player.x + 90)){
+                // Check if player is in same row
+               if(item.y <= player.y && !(player.y > item.y + 40)){
+                    item.collected = true;
+                    player.points += item.worth;
+                }
+            }
+        }
+    });
+}
+
+
+/* This function check the player's score, and sees if they've won. */
+Player.prototype.checkScore = function() {
+    if(player.points >= 50) {
+        player.win = true;
+    }
+}
+
+// Call functions that reacts based on player's current position
+Player.prototype.update = function() {
+    this.checkForItems();
+    this.checkScore();
+    if(player.y <= -10){
+        this.hitWater();
+    }
+}
+
+// Draw the player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
@@ -132,7 +170,12 @@ Player.prototype.render = function() {
         ctx.font = "54px serif";
         ctx.fillText('GAME OVER!', 100, 460);
         ctx.fillStyle = 'white';
-
+    }
+    if(this.win){
+        // Draw GAMEOVER.
+        ctx.font = "54px serif";
+        ctx.fillText('YOU WIN!', 100, 460);
+        ctx.fillStyle = 'white';
     }
 
 }
@@ -140,7 +183,7 @@ Player.prototype.render = function() {
 // Move player on screen depending on key pressed.
 Player.prototype.handleInput = function(move) {
     // Player can move as far as the canvas height and width
-    if(!this.gameover){
+    if(!this.gameover && !this.win){
         switch(move){
             case 'up':
                 if (this.y - 60 > 0) {
@@ -170,9 +213,11 @@ Player.prototype.handleInput = function(move) {
 
         }
     }
+    console.log(this.x + ',' + this.y);
+
 }
 
-var player = Player(202,380);
+var player = Player(200,390);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
