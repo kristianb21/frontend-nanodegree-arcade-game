@@ -211,7 +211,7 @@ Player.prototype.handleInput = function(move) {
             case 'down':
                 if (this.y + 250 < ctx.canvas.height) {
                     this.y = this.y + 80;
-                };
+                }
                 break;
 
             case 'right':
@@ -225,11 +225,8 @@ Player.prototype.handleInput = function(move) {
                     this.x = this.x - 101;
                 }
                 break;
-
         }
     }
-    console.log(this.x + ',' + this.y);
-
 };
 
 var player = Player(200,390);
