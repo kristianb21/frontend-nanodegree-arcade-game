@@ -163,7 +163,7 @@ Player.prototype.checkCollisions = function() {
 
         if ((allEnemies[i].x + 65 > player.x && allEnemies[i].x < player.x) && (allEnemies[i].y + 65 > player.y && allEnemies[i].y < player.y + 40)) {
             player.alive = false;
-            reset();
+            this.reset();
             break;
         };
     };
