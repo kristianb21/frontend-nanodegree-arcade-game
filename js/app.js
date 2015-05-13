@@ -284,4 +284,4 @@ var gem_blue = Item('images/Gem Blue.png', 10);
 var gem_orange = Item('images/Gem Orange.png', 10);
 var heart = Item('images/Heart.png', 10);
 
-var allItems = [key, star, gem_green, gem_blue, gem_orangeheart];
+var allItems = [key, star, gem_green, gem_blue, gem_orange, heart];
