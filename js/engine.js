@@ -81,7 +81,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        checkCollisions();
+
     }
 
     /* This is called by the update function and loops through all of the
@@ -96,21 +96,6 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
-    }
-    /* This function checks whether or not the player has crossed paths with an
-     * enemy, resulting in a collision and the player losing a life and getting
-     * resetted.
-     */
-    function checkCollisions() {
-        for (var i = allEnemies.length - 1; i >= 0; i--) {
-
-            if ((allEnemies[i].x + 65 > player.x && allEnemies[i].x < player.x) && (allEnemies[i].y + 65 > player.y && allEnemies[i].y < player.y + 40)) {
-                player.alive = false;
-                reset();
-                break;
-            };
-        };
-
     }
 
     /* This function initially draws the "game level", it will then call
