@@ -4,10 +4,13 @@ frontend-nanodegree-arcade-game
 Authored by: Kristian Brito
 Inspired by: Udacity
 
-How to play:
+How to Run:
+Open the index.html file in an up to date browser with JavaScript enabled.
+
+How to Play:
 You may begin playing on page load. Use the arrow keys to move your
 player per cell block across the canvas to collect special items without
-getting caught by the Enemy.
+getting caught by the Enemy(the silly little Cockroaches running from left to right).
 
 Points:
 Some items are worth more than others, varing 10 - 20 points.
