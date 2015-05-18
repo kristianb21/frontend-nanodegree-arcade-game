@@ -47,7 +47,7 @@ var Engine = (function(global) {
          * our update function since it may be used for smooth animation.
          */
         update(dt);
-        render();
+        render(ctx, Resources);
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -104,7 +104,7 @@ var Engine = (function(global) {
      * they are flipbooks creating the illusion of animation but in reality
      * they are just drawing the entire screen over and over.
      */
-    function render() {
+    function render(ctx, Resources) {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
@@ -136,26 +136,26 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-        renderEntities();
+        renderEntities(ctx, Resources);
     }
 
     /* This function is called by the render function and is called on each game
      * tick. It's purpose is to then call the render functions you have defined
      * on your enemy and player entities within app.js
      */
-    function renderEntities() {
+    function renderEntities(ctx, Resources) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
         allEnemies.forEach(function(enemy) {
-            enemy.render();
+            enemy.render(ctx, Resources);
         });
 
         allItems.forEach(function(item) {
-            item.render();
+            item.render(ctx, Resources);
         });
 
-        player.render();
+        player.render(ctx, Resources);
     }
 
 
@@ -167,7 +167,6 @@ var Engine = (function(global) {
         player.reset();
 
     }
-
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
@@ -178,12 +177,12 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/Key.png',
+        'images/key.png',
         'images/star.png',
-        'images/Gem Green.png',
-        'images/Gem Blue.png',
-        'images/Gem Orange.png',
-        'images/Heart.png',
+        'images/gem-green.png',
+        'images/gem-blue.png',
+        'images/gem-orange.png',
+        'images/heart.png',
     ]);
     Resources.onReady(init);
 

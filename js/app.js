@@ -1,31 +1,49 @@
+// Hello.
+//
+// This is JSHint, a tool that helps to detect errors and potential
+// problems in your JavaScript code.
+//
+// To start, simply enter some JavaScript anywhere on this page. Your
+// report will appear on the right side.
+//
+// Additionally, you can toggle specific options in the Configure
+// menu.
+
 /* Returns a random integer between min (included) and max (excluded)
  * Using Math.round() will give you a non-uniform distribution!
  */
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
+// Every object we use for the game will inherit this prototype
+
+var GameObj = function(x, y){
+
+    this.x = x;
+    this.y = y;
+};
+var ctx = ctx;
+// var Enemy = new GameObj(0, 0, 'images/enemy-bug.png');
 
 // Enemies our player must avoid
-var Enemy = function(x,y) {
+var Enemy = function() {
     // Iniate Object for Enemy
-    var obj = Object.create(Enemy.prototype);
     // Set enemy positioned to a random track
     var track = getRandomInt(0,2);
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    obj.sprite = 'images/enemy-bug.png';
+    this.sprite = 'images/enemy-bug.png';
 
     // Enemys run on 3 different y axis to instantiate tracks or their road way
-    obj.tracks = [60,150,230];
-    obj.x = x;
+    this.tracks = [60,150,230];
+    this.x = 0;
 
-    obj.y = obj.tracks[track];
+    this.y = this.tracks[track];
     // Set enemy moving speed at random
-    obj.speed = getRandomInt(2,6);
+    this.speed = getRandomInt(2,6);
 
-    return obj;
-}
+};
 
 /* Update the enemy's position, required method for game
  * Parameter: dt, a time delta between ticks
@@ -44,28 +62,26 @@ Enemy.prototype.update = function(dt) {
     }
     // Enemy keeps moving if player is still living or player has not won yet.
     if (player.alive && !player.win) {
-        this.x = this.x + this.speed+ 100 * dt;
+        this.x = this.x + this.speed + 100 * dt;
     }
-}
+};
 
 // Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
+Enemy.prototype.render = function(ctx, Resources) {
     // Draw enemy on canvas using its sprite img and its x and y values
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
-/* Create enemy object
- * params: x,y: positions
- */
-var enemy01 = Enemy(0,60);
-var enemy02 = Enemy(0,150);
-var enemy03 = Enemy(0,230);
-var enemy04 = Enemy(0,60);
-var enemy05 = Enemy(0,150);
-var enemy06 = Enemy(0,230);
-var enemy07 = Enemy(0,230);
-var enemy08 = Enemy(0,230);
-var enemy09 = Enemy(0,230);
-var allEnemies = [enemy01, enemy02, enemy03, enemy04, enemy05, enemy06, enemy07, enemy08, enemy09,]
+
+var enemy01 = new Enemy();
+var enemy02 = new Enemy();
+var enemy03 = new Enemy();
+var enemy04 = new Enemy();
+var enemy05 = new Enemy();
+var enemy06 = new Enemy();
+var enemy07 = new Enemy();
+var enemy08 = new Enemy();
+var enemy09 = new Enemy();
+var allEnemies = [enemy01, enemy02, enemy03, enemy04, enemy05, enemy06, enemy07, enemy08, enemy09];
 
 // The Player
 var Player = function(x,y) {
@@ -74,21 +90,19 @@ var Player = function(x,y) {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    var obj = Object.create(Player.prototype);
-    obj.sprite = 'images/char-boy.png';
-    obj.x = x;
-    obj.y = y;
-    obj.cuswidth = 65;
-    obj.cusheight = 80;
-    obj.x_pos = this.x + 100;
-    obj.y_pos = this.y + 100;
-    obj.alive = true;
-    obj.lives = 4;
-    obj.points = 0;
-    obj.gameovesr = false;
-    obj.win = false;
+    this.sprite = 'images/char-boy.png';
+    this.x = x;
+    this.y = y;
+    this.cuswidth = 65;
+    this.cusheight = 80;
+    this.x_pos = this.x + 100;
+    this.y_pos = this.y + 100;
+    this.alive = true;
+    this.lives = 4;
+    this.points = 0;
+    this.gameovesr = false;
+    this.win = false;
 
-    return obj;
 };
 
 // Reset the player's position
@@ -116,28 +130,27 @@ Player.prototype.hitWater = function() {
 
 /* This function checks if the player has came across any items.*/
 Player.prototype.checkForItems = function() {
-    var itemX,
-        itemY;
-    allItems.forEach(function(item){
-        // Check column if player is in same column and row
-        if(!item.collected){
 
-            if(item.x >= player.x && (item.x < player.x + 90)){
+    for (var i = allItems.length - 1; i >= 0; i--) {
+        // Check column if player is in same column and row
+        if(!allItems[i].collected){
+
+            if(allItems[i].x >= this.x && (allItems[i].x < this.x + 90)){
                 // Check if player is in same row
-               if(item.y <= player.y && !(player.y > item.y + 40)){
-                    item.collected = true;
-                    player.points += item.worth;
+               if(allItems[i].y <= this.y && this.y < allItems[i].y + 40 ){
+                    allItems[i].collected = true;
+                    this.points += allItems[i].worth;
                 }
             }
         }
-    });
+    }
 };
 
 
 /* This function check the player's score, and sees if they've won. */
 Player.prototype.checkScore = function() {
-    if(player.points >= 50) {
-        player.win = true;
+    if(this.points >= 50) {
+        this.win = true;
     }
 };
 
@@ -149,7 +162,7 @@ Player.prototype.update = function() {
     this.checkForItems();
     this.checkScore();
     // Check if player is currently in the water
-    if(player.y <= -10){
+    if(this.y <= -10){
         this.hitWater();
     }
 };
@@ -161,16 +174,16 @@ Player.prototype.update = function() {
 Player.prototype.checkCollisions = function() {
     for (var i = allEnemies.length - 1; i >= 0; i--) {
 
-        if ((allEnemies[i].x + 65 > player.x && allEnemies[i].x < player.x) && (allEnemies[i].y + 65 > player.y && allEnemies[i].y < player.y + 40)) {
-            player.alive = false;
+        if ((allEnemies[i].x + 65 > this.x && allEnemies[i].x < this.x) && (allEnemies[i].y + 65 > this.y && allEnemies[i].y < this.y + 40)) {
+            this.alive = false;
             this.reset();
             break;
-        };
-    };
+        }
+    }
 };
 
 /* This function draws the player, player's points, and win/lose message. */
-Player.prototype.render = function() {
+Player.prototype.render = function(ctx, Resources) {
     // Draw enemy on canvas using its sprite img and its x and y values
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
@@ -196,7 +209,7 @@ Player.prototype.render = function() {
 };
 
 // Move player on screen depending on key pressed.
-Player.prototype.handleInput = function(move) {
+Player.prototype.handleInput = function(move, ctx) {
     // Player can move as far as the canvas height and width
     if(!this.gameover && !this.win){
         switch(move){
@@ -229,7 +242,7 @@ Player.prototype.handleInput = function(move) {
     }
 };
 
-var player = Player(200,390);
+var player = new Player(200,390);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -240,36 +253,31 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
-    player.handleInput(allowedKeys[e.keyCode]);
+    player.handleInput(allowedKeys[e.keyCode], ctx);
 });
 
 /* This function is the declaration for collectable items. */
 var Item = function(sprite,worth) {
 
-    var obj = Object.create(Item.prototype);
     var column = getRandomInt(0,5);
     var track = getRandomInt(0,2);
 
-    obj.sprite = sprite;
+    this.sprite = sprite;
 
     // Draw on same tracks/cells as enemy to make collecting these items semi-challenging
-    obj.tracks = [50,140,220];
-    obj.columns = [105,205,305,405,505];
+    var tracks = [50,140,220];
+    var columns = [105,205,305,405,505];
 
-    obj.x = obj.columns[column];
+    this.x = columns[column];
+    this.y = tracks[track];
 
-    obj.y = obj.tracks[track];
-
-    obj.collected = false;
-    obj.worth = worth;
-
-    return obj;
+    this.collected = false;
+    this.worth = worth;
 };
 
 /* This function draws an item on the game.
  */
-Item.prototype.render = function() {
+Item.prototype.render = function(ctx, Resources) {
     // Only draw item if it has not been collected by the player
     if(!this.collected){
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -277,11 +285,11 @@ Item.prototype.render = function() {
 };
 
 // Define collectable items
-var key = Item('images/Key.png', 20);
-var star = Item('images/star.png', 10);
-var gem_green = Item('images/Gem Green.png', 10);
-var gem_blue = Item('images/Gem Blue.png', 10);
-var gem_orange = Item('images/Gem Orange.png', 10);
-var heart = Item('images/Heart.png', 10);
+var key = new Item('images/key.png', 20);
+var star = new Item('images/star.png', 10);
+var gem_green = new Item('images/gem-green.png', 10);
+var gem_blue = new Item('images/gem-blue.png', 10);
+var gem_orange = new Item('images/gem-orange.png', 10);
+var heart = new Item('images/heart.png', 10);
 
 var allItems = [key, star, gem_green, gem_blue, gem_orange, heart];
