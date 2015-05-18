@@ -1,33 +1,16 @@
-// Hello.
-//
-// This is JSHint, a tool that helps to detect errors and potential
-// problems in your JavaScript code.
-//
-// To start, simply enter some JavaScript anywhere on this page. Your
-// report will appear on the right side.
-//
-// Additionally, you can toggle specific options in the Configure
-// menu.
-
 /* Returns a random integer between min (included) and max (excluded)
  * Using Math.round() will give you a non-uniform distribution!
  */
 function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
+    return Math.floor(Math.random() * (max - min)) + min;
 }
-// Every object we use for the game will inherit this prototype
 
-var GameObj = function(x, y){
-
-    this.x = x;
-    this.y = y;
-};
 var ctx = ctx;
-// var Enemy = new GameObj(0, 0, 'images/enemy-bug.png');
 
-// Enemies our player must avoid
+/* Represents an enemy.
+ * @constructor
+ */
 var Enemy = function() {
-    // Iniate Object for Enemy
     // Set enemy positioned to a random track
     var track = getRandomInt(0,2);
 
@@ -46,7 +29,7 @@ var Enemy = function() {
 };
 
 /* Update the enemy's position, required method for game
- * Parameter: dt, a time delta between ticks
+ * @param: {number} dt - A time delta between ticks
  */
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
@@ -66,25 +49,27 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
-// Draw the enemy on the screen, required method for game
+//
+/* Draw the enemy on the screen, required method for game
+ * @param: {Object} ctx - The canvas of the game.
+ * @param: {Object} Resources - Defines publicly accessible functions
+ * available to developers.
+ */
 Enemy.prototype.render = function(ctx, Resources) {
     // Draw enemy on canvas using its sprite img and its x and y values
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-var enemy01 = new Enemy();
-var enemy02 = new Enemy();
-var enemy03 = new Enemy();
-var enemy04 = new Enemy();
-var enemy05 = new Enemy();
-var enemy06 = new Enemy();
-var enemy07 = new Enemy();
-var enemy08 = new Enemy();
-var enemy09 = new Enemy();
-var allEnemies = [enemy01, enemy02, enemy03, enemy04, enemy05, enemy06, enemy07, enemy08, enemy09];
+// Set number of enemies that is desired for the challenge.
+var number_of_enemies = 9;
+// We'll place the Enemy objects in this array.
+var allEnemies = [];
+for (var i = 0; i <= number_of_enemies; i++) {
+    allEnemies[i] = new Enemy();
+}
 
 // The Player
-var Player = function(x,y) {
+var Player = function(x, y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -133,11 +118,11 @@ Player.prototype.checkForItems = function() {
 
     for (var i = allItems.length - 1; i >= 0; i--) {
         // Check column if player is in same column and row
-        if(!allItems[i].collected){
+        if (!allItems[i].collected) {
 
-            if(allItems[i].x >= this.x && (allItems[i].x < this.x + 90)){
+            if (allItems[i].x >= this.x && (allItems[i].x < this.x + 90)) {
                 // Check if player is in same row
-               if(allItems[i].y <= this.y && this.y < allItems[i].y + 40 ){
+               if (allItems[i].y <= this.y && this.y < allItems[i].y + 40 ) {
                     allItems[i].collected = true;
                     this.points += allItems[i].worth;
                 }
@@ -149,7 +134,7 @@ Player.prototype.checkForItems = function() {
 
 /* This function check the player's score, and sees if they've won. */
 Player.prototype.checkScore = function() {
-    if(this.points >= 50) {
+    if (this.points >= 50) {
         this.win = true;
     }
 };
@@ -162,7 +147,7 @@ Player.prototype.update = function() {
     this.checkForItems();
     this.checkScore();
     // Check if player is currently in the water
-    if(this.y <= -10){
+    if (this.y <= -10) {
         this.hitWater();
     }
 };
@@ -193,13 +178,13 @@ Player.prototype.render = function(ctx, Resources) {
     ctx.fillText('Points: ' + this.points, 300, 550);
     ctx.fillStyle = 'white';
 
-    if(this.gameover){
+    if (this.gameover) {
         // Draw GAMEOVER.
         ctx.font = "54px serif";
         ctx.fillText('GAME OVER!', 100, 460);
         ctx.fillStyle = 'white';
     }
-    if(this.win){
+    if (this.win) {
         // Draw Player Wins.
         ctx.font = "54px serif";
         ctx.fillText('YOU WIN!', 100, 460);
@@ -211,12 +196,12 @@ Player.prototype.render = function(ctx, Resources) {
 // Move player on screen depending on key pressed.
 Player.prototype.handleInput = function(move, ctx) {
     // Player can move as far as the canvas height and width
-    if(!this.gameover && !this.win){
-        switch(move){
+    if (!this.gameover && !this.win) {
+        switch(move) {
             case 'up':
                 if (this.y - 60 > 0) {
                     this.y = this.y - 80;
-                }    else if(this.y - 30 > 0){
+                }    else if (this.y - 30 > 0) {
                     this.y = this.y - 80;
                 }
                 break;
@@ -279,7 +264,7 @@ var Item = function(sprite,worth) {
  */
 Item.prototype.render = function(ctx, Resources) {
     // Only draw item if it has not been collected by the player
-    if(!this.collected){
+    if (!this.collected) {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 };
