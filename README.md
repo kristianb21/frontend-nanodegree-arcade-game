@@ -27,4 +27,3 @@ Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global
 
 Rendering Canvas Canvas Text
 Source: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle
-
