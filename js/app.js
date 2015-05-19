@@ -1,6 +1,3 @@
-/** Welcome
- *
- */
 /** Returns a random integer between min (included) and max (excluded)
  * Using Math.round() will give you a non-uniform distribution!
  * @param: {number} min - minium number to be returned
