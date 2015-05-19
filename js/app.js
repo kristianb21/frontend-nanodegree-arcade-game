@@ -254,7 +254,7 @@ document.addEventListener('keyup', function(e) {
 });
 
 /** This function is the declaration for collectable items. */
-var Item = function(sprite,worth) {
+var Item = function(sprite, worth) {
 
     var column = getRandomInt(0,5);
     var track = getRandomInt(0,2);
